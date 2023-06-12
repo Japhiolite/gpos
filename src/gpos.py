@@ -5,6 +5,9 @@ App created June 12th 2023
 import numpy as np
 import streamlit as st
 
+
+st.set_page_config(layout="wide")
+
 #
 # GPOS sliders
 #
