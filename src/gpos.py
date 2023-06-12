@@ -65,6 +65,12 @@ POSexpl = Paq * Pperm * Pfluid * Ptemp * Pcon
 
 # GPOS as text output, rounded
 st.write(f"""{np.round(POSexpl * 100)} % GPOS""")
+
+st.markdown(f"""<font size=4>
+
+{np.round(POSexpl * 100)} % GPOS
+
+</font>""")
 #st.write(f"""_{np.round(Paq * 100)} % presence \* {np.round(Pperm * 100)} % permeability \*
 #{np.round(Pperm * 100)} % permeability \* {np.round(Ptemp * 100)} % temperature
 #\* {np.round(Pcon * 100)} % cconnectivity = {np.round(POSexpl * 100)} % GPOS_""")
