@@ -3,9 +3,7 @@
 App created June 12th 2023
 """
 import numpy as np
-import pandas as pd
 import streamlit as st
-import seaborn as sns
 
 #
 # GPOS sliders
