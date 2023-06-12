@@ -13,7 +13,7 @@ st.title('GPOS - Geologic Probability of Success')
 st.divider()
 
 st.markdown("""This minimum example lists different parameters which can affect the _GPOS_.
-            'Success is defined by discovering an economically _viable_ geothermal resource.""")
+            Success is defined by discovering an economically _viable_ geothermal resource.""")
 
 st.markdown("""The GPOS can comprise different probabilities which constitute to the overall probability of success.
             [van Lochem et al., 2021](https://www.earthdoc.org/content/papers/10.3997/2214-4609.202010694) for
