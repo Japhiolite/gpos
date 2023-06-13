@@ -11,7 +11,7 @@ st.set_page_config(layout="wide")
 #
 # GPOS sliders
 #
-st.image("https://tool.energy4climate.nrw/branchenfuehrer-erneuerbare/img/companies/373/online.jpg", width=500)
+st.image("https://tool.energy4climate.nrw/branchenfuehrer-erneuerbare/img/companies/373/online.jpg", width=300)
 
 st.title('GPOS - Geologic Probability of Success')
 
