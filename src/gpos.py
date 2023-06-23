@@ -21,8 +21,8 @@ st.markdown("""This minimum example lists different parameters which can affect 
             Success is defined by discovering an economically _viable_ geothermal resource.""")
 
 st.markdown("""The GPOS can comprise different probabilities which constitute to the overall probability of success.
-            [van Lochem et al., 2021](https://www.earthdoc.org/content/papers/10.3997/2214-4609.202010694) for
-            'instance lists multiple different probabilities:""")
+            [van Lochem et al., 2021](https://www.earthdoc.org/content/papers/10.3997/2214-4609.202010694), for
+            instance, lists multiple different probabilities:""")
 
 st.markdown("""
 | Element  | Short Description  | Main Risks  |  
@@ -48,8 +48,8 @@ with tab1:
 
     col1e, col2e = st.columns(2)  # Show sliders in 3 columns
 
-    Paq_ex = col1e.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{aq}$')
-    Pperm_ex = col2e.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{perm}$')
+    Paq_ex = col1e.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='paq_ex')
+    Pperm_ex = col2e.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='pperm_ex')
 
     Paq_ex /= 100
     Pperm_ex /= 100
@@ -68,14 +68,14 @@ with tab2:
 
     col1, col2, col3, col4, col5 = st.columns(5)  # Show sliders in 3 columns
 
-    Paq    = col1.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{aq}$')
-    Pperm  = col2.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{perm}$')
-    Pfluid = col3.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{fluid}$')
-    Ptemp  = col4.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{temp}$')
-    Pcon   = col5.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{con}$')
+    Paq    = col1.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq')
+    Pperm  = col2.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm')
+    Pfluid = col3.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid')
+    Ptemp  = col4.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp')
+    Pcon   = col5.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con')
 
-    st.markdown("""For an exploration well, only the first two estimates, $P_{aq}$ and $P_{perm}$ are important. Thus,
-    the others can be set to 100.""")
+    st.markdown("""For an exploration well, only the first two estimates, $P_{aq}$ and $P_{perm}$ are important. 
+    Please select the tab 'Exploration'. """)
 
     # Calculate GPOS in decimal percent
     Paq    /= 100
