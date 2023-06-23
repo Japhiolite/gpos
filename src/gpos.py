@@ -36,37 +36,69 @@ st.markdown("""
 
 st.divider()
 
-st.markdown("""$$GPOS = P_{aq} \\times P_{perm} \\times P_{fluid} \\times P_{T} \\times P_{con}$$""")
+tab1, tab2 = st.tabs(["Exploration", "Development"])
 
-st.divider()
+with tab1:
+    st.markdown("""$$GPOS = P_{aq} \\times P_{perm}$$""")
 
-st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the aforementioned 
-criteria based on available data and a geological, conceptual model.""")
+    st.divider()
+
+    st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the 
+    aforementioned criteria based on available data and a geological, conceptual model.""")
+
+    col1e, col2e = st.columns(2)  # Show sliders in 3 columns
+
+    Paq_ex = col1e.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{aq}$')
+    Pperm_ex = col2e.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{perm}$')
+
+    Paq_ex /= 100
+    Pperm_ex /= 100
+
+    POSexpl_ex = Paq_ex * Pperm_ex
+
+    st.write(f"""## {np.round(POSexpl_ex * 100)} % GPOS""")
+
+with tab2:
+    st.markdown("""$$GPOS = P_{aq} \\times P_{perm} \\times P_{fluid} \\times P_{T} \\times P_{con}$$""")
+
+    st.divider()
+
+    st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the 
+    aforementioned criteria based on available data and a geological, conceptual model.""")
+
+    col1, col2, col3, col4, col5 = st.columns(5)  # Show sliders in 3 columns
+
+    Paq    = col1.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{aq}$')
+    Pperm  = col2.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{perm}$')
+    Pfluid = col3.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{fluid}$')
+    Ptemp  = col4.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{temp}$')
+    Pcon   = col5.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{con}$')
+
+    st.markdown("""For an exploration well, only the first two estimates, $P_{aq}$ and $P_{perm}$ are important. Thus,
+    the others can be set to 100.""")
+
+    # Calculate GPOS in decimal percent
+    Paq    /= 100
+    Pperm  /= 100
+    Pfluid /= 100
+    Ptemp  /= 100
+    Pcon   /= 100
+
+    POSexpl = Paq * Pperm * Pfluid * Ptemp * Pcon
 
 
-col1, col2, col3, col4, col5 = st.columns(5)  # Show sliders in 3 columns
-
-Paq    = col1.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{aq}$')
-Pperm  = col2.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{perm}$')
-Pfluid = col3.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{fluid}$')
-Ptemp  = col4.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{temp}$')
-Pcon   = col5.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='$P_{con}$')
-
-st.markdown("""For an exploration well, only the first two estimates, $P_{aq}$ and $P_{perm}$ are important. Thus,
-the others can be set to 100.""")
-
-# Calculate GPOS in decimal percent
-Paq    /= 100
-Pperm  /= 100
-Pfluid /= 100
-Ptemp  /= 100
-Pcon   /= 100
-
-POSexpl = Paq * Pperm * Pfluid * Ptemp * Pcon
+    # GPOS as text output, rounded
+    st.write(f"""## {np.round(POSexpl * 100)} % GPOS""")
 
 
-# GPOS as text output, rounded
-st.write(f"""## {np.round(POSexpl * 100)} % GPOS""")
+st.markdown("""### References:
+Niederau, J., Ritzmann, O., Jüstel, A., Wellmann, F., & Kettermann, M. (2023, June). Green field exploration in the 
+Aachen-Weisweiler region, Germany: Constraints and concepts for uncertainty and risk assessment. 
+_In 84th EAGE Annual Conference & Exhibition_ (Vol. 2023, No. 1, pp. 1-5). _European Association of Geoscientists 
+& Engineers._
+
+Van Lochem, H. (2021, October). GPOS Evaluation For Geothermal Projects in the Netherlands. 
+_In 82nd EAGE Annual Conference & Exhibition_ (Vol. 2021, No. 1, pp. 1-5). _EAGE Publications BV_.""")
 
 #st.write(f"""_{np.round(Paq * 100)} % presence \* {np.round(Pperm * 100)} % permeability \*
 #{np.round(Pperm * 100)} % permeability \* {np.round(Ptemp * 100)} % temperature
