@@ -36,59 +36,105 @@ st.markdown("""
 
 st.divider()
 
-tab1, tab2 = st.tabs(["Exploration", "Development"])
 
-with tab1:
-    st.markdown("""$$GPOS = P_{aq} \\times P_{perm}$$""")
+col1, col2, col3, col4 = st.columns(4)
 
-    st.divider()
+with col1:
+    check_box_presence      = st.checkbox("Presence")
+    check_box_permeability  = st.checkbox("Permeability")
+    check_box_fluid         = st.checkbox("Fluid")
+    check_box_temperature   = st.checkbox("Temperature")
+    check_box_connectivity  = st.checkbox("Connectivity")
 
-    st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the 
-    aforementioned criteria based on available data and a geological, conceptual model.""")
+with col2:
+    Paq    = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq')
+    Pperm  = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm')
+    Pfluid = st.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid')
+    Ptemp  = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp')
+    Pcon   = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con')
 
-    col1e, col2e = st.columns(2)  # Show sliders in 3 columns
-
-    Paq_ex = col1e.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='paq_ex')
-    Pperm_ex = col2e.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='pperm_ex')
-
-    Paq_ex /= 100
-    Pperm_ex /= 100
-
-    POSexpl_ex = Paq_ex * Pperm_ex
-
-    st.write(f"""## {np.round(POSexpl_ex * 100)} % GPOS""")
-
-with tab2:
-    st.markdown("""$$GPOS = P_{aq} \\times P_{perm} \\times P_{fluid} \\times P_{T} \\times P_{con}$$""")
-
-    st.divider()
-
-    st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the 
-    aforementioned criteria based on available data and a geological, conceptual model.""")
-
-    col1, col2, col3, col4, col5 = st.columns(5)  # Show sliders in 3 columns
-
-    Paq    = col1.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq')
-    Pperm  = col2.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm')
-    Pfluid = col3.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid')
-    Ptemp  = col4.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp')
-    Pcon   = col5.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con')
-
-    st.markdown("""For an exploration well, only the first two estimates, $P_{aq}$ and $P_{perm}$ are important. 
-    Please select the tab 'Exploration'. """)
-
-    # Calculate GPOS in decimal percent
-    Paq    /= 100
-    Pperm  /= 100
-    Pfluid /= 100
-    Ptemp  /= 100
-    Pcon   /= 100
-
-    POSexpl = Paq * Pperm * Pfluid * Ptemp * Pcon
+with col3:
+    sel_presence        = st.selectbox("Presence", ("High", "Moderate", "Low"))
+    sel_permeability    = st.selectbox("Permeability", ("High", "Moderate", "Low"))
+    sel_fluid           = st.selectbox("Fluid", ("High", "Moderate", "Low"))
+    sel_temperature     = st.selectbox("Temperature", ("High", "Moderate", "Low"))
+    sel_connectivity    = st.selectbox("Connectivity", ("High", "Moderate", "Low"))
 
 
-    # GPOS as text output, rounded
-    st.write(f"""## {np.round(POSexpl * 100)} % GPOS""")
+with col4:
+    st.image(r"../imgs/Rose_risk.PNG")
+
+
+
+st.title("Check Boxes")
+
+check_box_1 = st.checkbox("Partial ratio")
+
+check_box_2 = st.checkbox("Token sort ratio", value=True)
+
+st.title("Sliders")
+
+if check_box_1 == True:
+
+    Partial_ratio_slider = st.slider('partial ratio values')
+
+if check_box_2 == True:
+
+    Token_sort_slider = st.slider('token sort ratio values')
+
+#tab1, tab2 = st.tabs(["Exploration", "Development"])
+
+#with tab1:
+#    st.markdown("""$$GPOS = P_{aq} \\times P_{perm}$$""")
+
+#    st.divider()
+
+#    st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the
+#    aforementioned criteria based on available data and a geological, conceptual model.""")
+
+#    col1e, col2e = st.columns(2)  # Show sliders in 3 columns
+
+#    Paq_ex = col1e.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='paq_ex')
+#    Pperm_ex = col2e.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='pperm_ex')
+
+#    Paq_ex /= 100
+#    Pperm_ex /= 100
+
+#    POSexpl_ex = Paq_ex * Pperm_ex
+
+#    st.write(f"""## {np.round(POSexpl_ex * 100, 2)} % GPOS""")
+
+#with tab2:
+#    st.markdown("""$$GPOS = P_{aq} \\times P_{perm} \\times P_{fluid} \\times P_{T} \\times P_{con}$$""")
+
+#    st.divider()
+
+#    st.markdown("""To get to a GPOS, the estimated percent confidences that the prospected reservoir meets the
+#    aforementioned criteria based on available data and a geological, conceptual model.""")
+
+#    col1, col2, col3, col4, col5 = st.columns(5)  # Show sliders in 3 columns
+
+#    Paq    = col1.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq')
+#    Pperm  = col2.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm')
+#    Pfluid = col3.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid')
+#    Ptemp  = col4.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp')
+#    Pcon   = col5.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con')
+
+#    st.markdown("""For an exploration well, only the first two estimates, $P_{aq}$ and $P_{perm}$ are important.
+#    Please select the tab 'Exploration'. """)
+
+#    # Calculate GPOS in decimal percent
+#    Paq    /= 100
+#    Pperm  /= 100
+#    Pfluid /= 100
+#    Ptemp  /= 100
+#    Pcon   /= 100
+
+#    POSexpl = Paq * Pperm * Pfluid * Ptemp * Pcon
+
+
+#    # GPOS as text output, rounded
+#    st.write(f"""## {np.round(POSexpl * 100,2)} % GPOS""")
 
 
 st.markdown("""### References:
@@ -96,6 +142,9 @@ Niederau, J., Ritzmann, O., Jüstel, A., Wellmann, F., & Kettermann, M. (2023, J
 Aachen-Weisweiler region, Germany: Constraints and concepts for uncertainty and risk assessment. 
 _In 84th EAGE Annual Conference & Exhibition_ (Vol. 2023, No. 1, pp. 1-5). _European Association of Geoscientists 
 & Engineers._
+
+Rose, P. R. (2001). Risk analysis and management of petroleum exploration ventures (Vol. 12). 
+_Tulsa, OK: American Association of Petroleum Geologists._
 
 Van Lochem, H. (2021, October). GPOS Evaluation For Geothermal Projects in the Netherlands. 
 _In 82nd EAGE Annual Conference & Exhibition_ (Vol. 2021, No. 1, pp. 1-5). _EAGE Publications BV_.""")
