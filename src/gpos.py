@@ -7,6 +7,16 @@ import streamlit as st
 
 
 st.set_page_config(layout="wide")
+if "P_aq" not in st.session_state:
+    st.session_state.disabled = False
+if "P_perm" not in st.session_state:
+    st.session_state.disabled_perm = False
+if "P_fluid" not in st.session_state:
+    st.session_state.disabled_fluid = False
+if "P_temp" not in st.session_state:
+    st.session_state.disabled_temp = False
+if "P_con" not in st.session_state:
+    st.session_state.disabled_con = False
 
 #
 # GPOS sliders
@@ -37,21 +47,26 @@ st.markdown("""
 st.divider()
 
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns([0.5,1,1,2])
 
 with col1:
-    check_box_presence      = st.checkbox("Presence")
-    check_box_permeability  = st.checkbox("Permeability")
-    check_box_fluid         = st.checkbox("Fluid")
-    check_box_temperature   = st.checkbox("Temperature")
-    check_box_connectivity  = st.checkbox("Connectivity")
+    check_box_presence      = st.checkbox("Presence", key="disabled_aq")
+    check_box_permeability  = st.checkbox("Permeability", key="disabled_perm")
+    check_box_fluid         = st.checkbox("Fluid", key="disabled_fluid")
+    check_box_temperature   = st.checkbox("Temperature", key="disabled_temp")
+    check_box_connectivity  = st.checkbox("Connectivity", key="disabled_con")
 
 with col2:
-    Paq    = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq')
-    Pperm  = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm')
-    Pfluid = st.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid')
-    Ptemp  = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp')
-    Pcon   = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con')
+    Paq    = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq',
+                       disabled=st.session_state.disabled_aq)
+    Pperm  = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm',
+                       disabled=st.session_state.disabled_perm)
+    Pfluid = st.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid',
+                       disabled=st.session_state.disabled_fluid)
+    Ptemp  = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp',
+                       disabled=st.session_state.disabled_temp)
+    Pcon   = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con',
+                       disabled=st.session_state.disabled_con)
 
 with col3:
     sel_presence        = st.selectbox("Presence", ("High", "Moderate", "Low"))
@@ -62,7 +77,8 @@ with col3:
 
 
 with col4:
-    st.image(r"../imgs/Rose_risk.PNG")
+    st.image(r"https://raw.githubusercontent.com/Japhiolite/gpos/dev_dgk/imgs/Rose_risk.PNG")
+    st.text("Chance Matrix after Rose (2001)")
 
 
 
