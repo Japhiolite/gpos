@@ -58,15 +58,15 @@ with col1:
 
 with col2:
     Paq    = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq',
-                       disabled=st.session_state.disabled_aq)
+                       disabled=not st.session_state.disabled_aq)
     Pperm  = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm',
-                       disabled=st.session_state.disabled_perm)
+                       disabled=not st.session_state.disabled_perm)
     Pfluid = st.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid',
-                       disabled=st.session_state.disabled_fluid)
+                       disabled=not st.session_state.disabled_fluid)
     Ptemp  = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp',
-                       disabled=st.session_state.disabled_temp)
+                       disabled=not st.session_state.disabled_temp)
     Pcon   = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con',
-                       disabled=st.session_state.disabled_con)
+                       disabled=not st.session_state.disabled_con)
 
 with col3:
     sel_presence        = st.selectbox("Presence", ("High", "Moderate", "Low"))
