@@ -101,7 +101,10 @@ with col4:
     fig.update_traces(marker=dict(size=50))
     st.plotly_chart(fig, theme="streamlit")
 
-POS_ex = new_df['probability'].prod()
+if new_df.size == 0:
+    POS_ex = 0
+else:
+    POS_ex = new_df['probability'].prod()
 
 st.write(f"""## {np.round(POS_ex * 100, 2)} % GPOS""")
 
