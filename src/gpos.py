@@ -24,7 +24,7 @@ if "P_con" not in st.session_state:
 #
 # GPOS sliders
 #
-st.image("https://tool.energy4climate.nrw/branchenfuehrer-erneuerbare/img/companies/373/online.jpg", width=300)
+# st.image("https://tool.energy4climate.nrw/branchenfuehrer-erneuerbare/img/companies/373/online.jpg", width=300)
 
 st.title('GPOS - Geologic Probability of Success')
 
