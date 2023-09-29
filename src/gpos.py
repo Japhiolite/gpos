@@ -4,11 +4,14 @@ App created June 12th 2023
 """
 import numpy as np
 import streamlit as st
-
+import plotly.express as px
+from plotly.subplots import make_subplots
+import plotly.graph_objects as go
+import pandas as pd
 
 st.set_page_config(layout="wide")
 if "P_aq" not in st.session_state:
-    st.session_state.disabled = False
+    st.session_state.disabled_aq = False
 if "P_perm" not in st.session_state:
     st.session_state.disabled_perm = False
 if "P_fluid" not in st.session_state:
@@ -46,61 +49,86 @@ st.markdown("""
 
 st.divider()
 
-
-col1, col2, col3, col4 = st.columns([0.5,1,1,2])
+col1, col2, col3, col4 = st.columns([0.5, 1, 1, 2])
 
 with col1:
-    check_box_presence      = st.checkbox("Presence", key="disabled_aq")
-    check_box_permeability  = st.checkbox("Permeability", key="disabled_perm")
-    check_box_fluid         = st.checkbox("Fluid", key="disabled_fluid")
-    check_box_temperature   = st.checkbox("Temperature", key="disabled_temp")
-    check_box_connectivity  = st.checkbox("Connectivity", key="disabled_con")
+    st.write("### Parameter")
+    check_box_presence = st.checkbox("Presence", key="disabled_aq")
+    check_box_permeability = st.checkbox("Permeability", key="disabled_perm")
+    check_box_fluid = st.checkbox("Fluid", key="disabled_fluid")
+    check_box_temperature = st.checkbox("Temperature", key="disabled_temp")
+    check_box_connectivity = st.checkbox("Connectivity", key="disabled_con")
 
 with col2:
-    Paq    = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq',
-                       disabled=not st.session_state.disabled_aq)
-    Pperm  = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm',
-                       disabled=not st.session_state.disabled_perm)
+    st.write("### Probability")
+    Paq = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq',
+                    disabled=not st.session_state.disabled_aq)
+    Pperm = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm',
+                      disabled=not st.session_state.disabled_perm)
     Pfluid = st.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid',
                        disabled=not st.session_state.disabled_fluid)
-    Ptemp  = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp',
-                       disabled=not st.session_state.disabled_temp)
-    Pcon   = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con',
-                       disabled=not st.session_state.disabled_con)
+    Ptemp = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp',
+                      disabled=not st.session_state.disabled_temp)
+    Pcon = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con',
+                     disabled=not st.session_state.disabled_con)
 
 with col3:
-    sel_presence        = st.selectbox("Presence", ("High", "Moderate", "Low"))
-    sel_permeability    = st.selectbox("Permeability", ("High", "Moderate", "Low"))
-    sel_fluid           = st.selectbox("Fluid", ("High", "Moderate", "Low"))
-    sel_temperature     = st.selectbox("Temperature", ("High", "Moderate", "Low"))
-    sel_connectivity    = st.selectbox("Connectivity", ("High", "Moderate", "Low"))
+    st.write("### Confidence")
+    sel_presence = st.selectbox("Presence", ("Low", "Moderate", "High"))
+    sel_permeability = st.selectbox("Permeability", ("Low", "Moderate", "High"))
+    sel_fluid = st.selectbox("Fluid", ("Low", "Moderate", "High"))
+    sel_temperature = st.selectbox("Temperature", ("Low", "Moderate", "High"))
+    sel_connectivity = st.selectbox("Connectivity", ("Low", "Moderate", "High"))
+    sel_dict = dict(High=3, Moderate=2, Low=1)
 
+names = ["Presence", "Permeability", "Fluid", "Temperature", "Connectivity"]
+sliders = [Paq/100, Pperm/100, Pfluid/100, Ptemp/100, Pcon/100]
+selects = [sel_presence, sel_permeability, sel_fluid, sel_temperature, sel_connectivity]
+selects_num = [sel_dict[x] for x in selects]
+abled = [st.session_state.disabled_aq, st.session_state.disabled_perm, st.session_state.disabled_fluid,
+         st.session_state.disabled_temp, st.session_state.disabled_con]
+plotdata = dict(parameter=names, probability=sliders, confidence=selects, confidence_num=selects_num, enabled=abled)
+df = pd.DataFrame.from_dict(plotdata)
 
 with col4:
-    st.image(r"https://raw.githubusercontent.com/Japhiolite/gpos/dev_dgk/imgs/Rose_risk.PNG")
-    st.text("Chance Matrix after Rose (2001)")
+    st.write("### A - to be improved - Plot")
+    new_df = df[df['enabled'] == True]
+    fig = px.scatter(new_df, y="confidence", x="probability", color="parameter", symbol="parameter", size_max=100)
 
+    desired_order = ["Low", "Moderate", "High"]
+    fig.update_xaxes(range=[0, 1])
+    fig.update_yaxes(categoryorder="array",categoryarray=desired_order)
+    fig.update_traces(marker=dict(size=50))
+    st.plotly_chart(fig, theme="streamlit")
 
+POS_ex = new_df['probability'].prod()
 
-st.title("Check Boxes")
+st.write(f"""## {np.round(POS_ex * 100, 2)} % GPOS""")
 
-check_box_1 = st.checkbox("Partial ratio")
+    # fig = px.imshow(df)
+    # st.plotly_chart(fig, theme="streamlit")
+    # st.image(r"https://raw.githubusercontent.com/Japhiolite/gpos/dev_dgk/imgs/Rose_risk.PNG")
+    # st.text("Chance Matrix after Rose (2001)")
 
-check_box_2 = st.checkbox("Token sort ratio", value=True)
+# st.title("Check Boxes")
+#
+# check_box_1 = st.checkbox("Partial ratio")
+#
+# check_box_2 = st.checkbox("Token sort ratio", value=True)
+#
+# st.title("Sliders")
+#
+# if check_box_1 == True:
+#
+#    Partial_ratio_slider = st.slider('partial ratio values')
+#
+# if check_box_2 == True:
+#
+#    Token_sort_slider = st.slider('token sort ratio values')
 
-st.title("Sliders")
+# tab1, tab2 = st.tabs(["Exploration", "Development"])
 
-if check_box_1 == True:
-
-    Partial_ratio_slider = st.slider('partial ratio values')
-
-if check_box_2 == True:
-
-    Token_sort_slider = st.slider('token sort ratio values')
-
-#tab1, tab2 = st.tabs(["Exploration", "Development"])
-
-#with tab1:
+# with tab1:
 #    st.markdown("""$$GPOS = P_{aq} \\times P_{perm}$$""")
 
 #    st.divider()
@@ -120,7 +148,7 @@ if check_box_2 == True:
 
 #    st.write(f"""## {np.round(POSexpl_ex * 100, 2)} % GPOS""")
 
-#with tab2:
+# with tab2:
 #    st.markdown("""$$GPOS = P_{aq} \\times P_{perm} \\times P_{fluid} \\times P_{T} \\times P_{con}$$""")
 
 #    st.divider()
@@ -165,6 +193,6 @@ _Tulsa, OK: American Association of Petroleum Geologists._
 Van Lochem, H. (2021, October). GPOS Evaluation For Geothermal Projects in the Netherlands. 
 _In 82nd EAGE Annual Conference & Exhibition_ (Vol. 2021, No. 1, pp. 1-5). _EAGE Publications BV_.""")
 
-#st.write(f"""_{np.round(Paq * 100)} % presence \* {np.round(Pperm * 100)} % permeability \*
-#{np.round(Pperm * 100)} % permeability \* {np.round(Ptemp * 100)} % temperature
-#\* {np.round(Pcon * 100)} % cconnectivity = {np.round(POSexpl * 100)} % GPOS_""")
+# st.write(f"""_{np.round(Paq * 100)} % presence \* {np.round(Pperm * 100)} % permeability \*
+# {np.round(Pperm * 100)} % permeability \* {np.round(Ptemp * 100)} % temperature
+# \* {np.round(Pcon * 100)} % cconnectivity = {np.round(POSexpl * 100)} % GPOS_""")
