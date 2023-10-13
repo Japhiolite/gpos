@@ -21,6 +21,8 @@ if "P_temp" not in st.session_state:
 if "P_con" not in st.session_state:
     st.session_state.disabled_con = False
 
+sel_dict = dict(High=3, Moderate=2, Low=1)
+
 #
 # GPOS sliders
 #
@@ -48,65 +50,129 @@ st.markdown("""
 """)
 
 st.divider()
+# create tabs for free choice and wizard description
+tab1, tab2 = st.tabs(["Risk assertion wizard", "Free choice"])
 
-col1, col2, col3, col4 = st.columns([0.5, 1, 1, 2])
+with tab1:
+    st.header("HEYHO!")
+    col1_wiz, col2_wiz = st.columns([0.5,2]) #, col3_wiz
 
-with col1:
-    st.write("### Parameter")
-    check_box_presence = st.checkbox("Presence", key="disabled_aq")
-    check_box_permeability = st.checkbox("Permeability", key="disabled_perm")
-    check_box_fluid = st.checkbox("Fluid", key="disabled_fluid")
-    check_box_temperature = st.checkbox("Temperature", key="disabled_temp")
-    check_box_connectivity = st.checkbox("Connectivity", key="disabled_con")
+    with col1_wiz:
+        st.write("### Parameter")
+        wiz_check_box_presence = st.checkbox("Presence", key="disabled_aq_wiz")
 
-with col2:
-    st.write("### Probability")
-    Paq = st.slider('Presence', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_aq',
-                    disabled=not st.session_state.disabled_aq)
-    Pperm = st.slider('Permeability', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_perm',
-                      disabled=not st.session_state.disabled_perm)
-    Pfluid = st.slider('Fluid', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_fluid',
-                       disabled=not st.session_state.disabled_fluid)
-    Ptemp = st.slider('Temperature', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_temp',
-                      disabled=not st.session_state.disabled_temp)
-    Pcon = st.slider('Connectivity', value=50, min_value=1, max_value=100, step=1, format='%i%%', key='P_con',
-                     disabled=not st.session_state.disabled_con)
 
-with col3:
-    st.write("### Confidence")
-    sel_presence = st.selectbox("Presence", ("Low", "Moderate", "High"))
-    sel_permeability = st.selectbox("Permeability", ("Low", "Moderate", "High"))
-    sel_fluid = st.selectbox("Fluid", ("Low", "Moderate", "High"))
-    sel_temperature = st.selectbox("Temperature", ("Low", "Moderate", "High"))
-    sel_connectivity = st.selectbox("Connectivity", ("Low", "Moderate", "High"))
-    sel_dict = dict(High=3, Moderate=2, Low=1)
 
-names = ["Presence", "Permeability", "Fluid", "Temperature", "Connectivity"]
-sliders = [Paq/100, Pperm/100, Pfluid/100, Ptemp/100, Pcon/100]
-selects = [sel_presence, sel_permeability, sel_fluid, sel_temperature, sel_connectivity]
-selects_num = [sel_dict[x] for x in selects]
-abled = [st.session_state.disabled_aq, st.session_state.disabled_perm, st.session_state.disabled_fluid,
-         st.session_state.disabled_temp, st.session_state.disabled_con]
-plotdata = dict(parameter=names, probability=sliders, confidence=selects, confidence_num=selects_num, enabled=abled)
-df = pd.DataFrame.from_dict(plotdata)
+        wiz_check_box_permeability = st.checkbox("Permeability", key="disabled_perm_wiz")
+        wiz_check_box_fluid = st.checkbox("Fluid", key="disabled_fluid_wiz")
+        wiz_check_box_temperature = st.checkbox("Temperature", key="disabled_temp_wiz")
+        wiz_check_box_connectivity = st.checkbox("Connectivity", key="disabled_con_wiz")
 
-with col4:
-    st.write("### A - to be improved - Plot")
-    new_df = df[df['enabled'] == True]
-    fig = px.scatter(new_df, y="confidence", x="probability", color="parameter", symbol="parameter", size_max=100)
+    with col2_wiz:
+        st.markdown("""### Confidence
+        In this column, estimate the confidence in each of the selected parameters for the risk assessment. 
+        Several factors influence, how confident you are in the _determination_ of the parameter.""")
 
-    desired_order = ["Low", "Moderate", "High"]
-    fig.update_xaxes(range=[0, 1])
-    fig.update_yaxes(categoryorder="array",categoryarray=desired_order)
-    fig.update_traces(marker=dict(size=50))
-    st.plotly_chart(fig, theme="streamlit")
+        if wiz_check_box_presence == True:
+            wiz_check_well = st.checkbox("wells in the vicinity?")
+            wiz_check_2D = st.checkbox("2D seismic line")
+            wiz_check_2D_well = st.checkbox("with well-tie?")
+            wiz_check_more_2D = st.checkbox("multiple 2D seismic lines")
+            wiz_check_3D = st.checkbox("3D seismic")
 
-if new_df.size == 0:
-    POS_ex = 0
-else:
-    POS_ex = new_df['probability'].prod()
+            sum_of_checks = wiz_check_well + wiz_check_2D + wiz_check_2D_well + wiz_check_more_2D + wiz_check_3D
 
-st.write(f"""## {np.round(POS_ex * 100, 2)} % GPOS""")
+            if sum_of_checks < 2:
+                pres_confidence = 1
+            elif 2 <= sum_of_checks < 4:
+                pres_confidence = 2
+            elif sum_of_checks >= 4:
+                pres_confidence = 3
+
+            for key, val in sel_dict.items():  # for name, age in dictionary.iteritems():  (for Python 2.x)
+                if val == pres_confidence:
+                    confidence = key
+                    st.markdown(f"The confidence in reservoir presence is **{confidence}**.")
+
+
+
+
+
+
+
+
+    #with col3_wiz:
+    #    st.markdown("""### Risk severity
+    #    What is the risk severity of your assessment?""")
+    #
+    #    wiz_sel_presence = st.selectbox(" Presence", ("Low", "Moderate", "High"))
+    #    wiz_sel_permeability = st.selectbox(" Permeability", ("Low", "Moderate", "High"))
+    #    wiz_sel_fluid = st.selectbox(" Fluid", ("Low", "Moderate", "High"))
+    #    wiz_sel_temperature = st.selectbox(" Temperature", ("Low", "Moderate", "High"))
+    #    wiz_sel_connectivity = st.selectbox(" Connectivity", ("Low", "Moderate", "High"))
+    #    wiz_sel_dict = dict(High=3, Moderate=2, Low=1)
+
+
+
+with tab2:
+    col1, col2, col3, col4 = st.columns([0.5, 1, 1, 2])
+
+    with col1:
+        st.write("### Parameter")
+        check_box_presence = st.checkbox("Presence", key="disabled_aq")
+        check_box_permeability = st.checkbox("Permeability", key="disabled_perm")
+        check_box_fluid = st.checkbox("Fluid", key="disabled_fluid")
+        check_box_temperature = st.checkbox("Temperature", key="disabled_temp")
+        check_box_connectivity = st.checkbox("Connectivity", key="disabled_con")
+
+    with col2:
+        st.write("### Probability")
+        Paq = st.slider('Presence', value=50, min_value=0, max_value=100, step=10, format='%i%%', key='P_aq',
+                        disabled=not st.session_state.disabled_aq)
+        Pperm = st.slider('Permeability', value=50, min_value=0, max_value=100, step=10, format='%i%%', key='P_perm',
+                          disabled=not st.session_state.disabled_perm)
+        Pfluid = st.slider('Fluid', value=50, min_value=0, max_value=100, step=10, format='%i%%', key='P_fluid',
+                           disabled=not st.session_state.disabled_fluid)
+        Ptemp = st.slider('Temperature', value=50, min_value=0, max_value=100, step=10, format='%i%%', key='P_temp',
+                          disabled=not st.session_state.disabled_temp)
+        Pcon = st.slider('Connectivity', value=50, min_value=0, max_value=100, step=10, format='%i%%', key='P_con',
+                         disabled=not st.session_state.disabled_con)
+
+    with col3:
+        st.write("### Confidence")
+        sel_presence = st.selectbox("Presence", ("Low", "Moderate", "High"))
+        sel_permeability = st.selectbox("Permeability", ("Low", "Moderate", "High"))
+        sel_fluid = st.selectbox("Fluid", ("Low", "Moderate", "High"))
+        sel_temperature = st.selectbox("Temperature", ("Low", "Moderate", "High"))
+        sel_connectivity = st.selectbox("Connectivity", ("Low", "Moderate", "High"))
+        #sel_dict = dict(High=3, Moderate=2, Low=1)
+
+    names = ["Presence", "Permeability", "Fluid", "Temperature", "Connectivity"]
+    sliders = [Paq/100, Pperm/100, Pfluid/100, Ptemp/100, Pcon/100]
+    selects = [sel_presence, sel_permeability, sel_fluid, sel_temperature, sel_connectivity]
+    selects_num = [sel_dict[x] for x in selects]
+    abled = [st.session_state.disabled_aq, st.session_state.disabled_perm, st.session_state.disabled_fluid,
+             st.session_state.disabled_temp, st.session_state.disabled_con]
+    plotdata = dict(parameter=names, probability=sliders, confidence=selects, confidence_num=selects_num, enabled=abled)
+    df = pd.DataFrame.from_dict(plotdata)
+
+    with col4:
+        st.write("### Confidence - Probability Plot")
+        new_df = df[df['enabled'] == True]
+        fig = px.scatter(new_df, y="confidence", x="probability", color="parameter", symbol="parameter", size_max=100)
+
+        desired_order = ["Low", "Moderate", "High"]
+        fig.update_xaxes(range=[0, 1])
+        fig.update_yaxes(categoryorder="array",categoryarray=desired_order)
+        fig.update_traces(marker=dict(size=50))
+        st.plotly_chart(fig, theme="streamlit")
+
+    if new_df.size == 0:
+        POS_ex = 0
+    else:
+        POS_ex = new_df['probability'].prod()
+
+    st.write(f"""## {np.round(POS_ex * 100, 0)} % GPOS""")
 
     # fig = px.imshow(df)
     # st.plotly_chart(fig, theme="streamlit")
