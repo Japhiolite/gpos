@@ -54,7 +54,6 @@ st.divider()
 tab1, tab2 = st.tabs(["Risk assertion wizard", "Free choice"])
 
 with tab1:
-    st.header("HEYHO!")
     col1_wiz, col2_wiz = st.columns([0.5,2]) #, col3_wiz
 
     with col1_wiz:
