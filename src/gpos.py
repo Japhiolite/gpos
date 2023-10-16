@@ -54,7 +54,7 @@ st.divider()
 tab1, tab2 = st.tabs(["Risk assertion wizard", "Free choice"])
 
 with tab1:
-    col1_wiz, col2_wiz = st.columns([0.5,2]) #, col3_wiz
+    col1_wiz, col2_wiz, col3_wiz = st.columns([0.5,1,1]) #
 
     with col1_wiz:
         st.write("### Parameter")
@@ -93,24 +93,31 @@ with tab1:
                     confidence = key
                     st.markdown(f"The confidence in reservoir presence is **{confidence}**.")
 
+    with col3_wiz:
+        st.markdown("""### Risk severity
+        What is the risk severity of your assessment?""")
+
+        wiz_sel_presence = st.selectbox(" Presence", ("Low", "Moderate", "High"))
+        wiz_sel_permeability = st.selectbox(" Permeability", ("Low", "Moderate", "High"))
+        wiz_sel_fluid = st.selectbox(" Fluid", ("Low", "Moderate", "High"))
+        wiz_sel_temperature = st.selectbox(" Temperature", ("Low", "Moderate", "High"))
+        wiz_sel_connectivity = st.selectbox(" Connectivity", ("Low", "Moderate", "High"))
+        wiz_sel_dict = dict(High=3, Moderate=2, Low=1)
 
 
 
-
-
-
-
-    #with col3_wiz:
-    #    st.markdown("""### Risk severity
-    #    What is the risk severity of your assessment?""")
-    #
-    #    wiz_sel_presence = st.selectbox(" Presence", ("Low", "Moderate", "High"))
-    #    wiz_sel_permeability = st.selectbox(" Permeability", ("Low", "Moderate", "High"))
-    #    wiz_sel_fluid = st.selectbox(" Fluid", ("Low", "Moderate", "High"))
-    #    wiz_sel_temperature = st.selectbox(" Temperature", ("Low", "Moderate", "High"))
-    #    wiz_sel_connectivity = st.selectbox(" Connectivity", ("Low", "Moderate", "High"))
-    #    wiz_sel_dict = dict(High=3, Moderate=2, Low=1)
-
+    fig = go.Figure(data=go.Heatmap(
+                        z=[[15, 20, 25],
+                          [20, 25, 30],
+                          [35, 0, 40]],
+                        text=[['.3 - .5', '.5 - .6', '.6 - .7'],
+                              ['.2 - .4', '.4 - .7', '.7 - .9'],
+                              ['.1 - .3', '', '.8 - 1.0']],
+                        texttemplate="%{text}",
+                        textfont={"size":20},
+                        x=["Risk Severity High", "Risk Severity Moderate", "Risk Severity Low"],
+                        y=["Confidence Low", "Confidence Moderate", "Confidence High"]))
+    st.plotly_chart(fig, theme="streamlit")
 
 
 with tab2:
